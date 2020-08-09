@@ -1,5 +1,8 @@
 package com.wison.mvc.servlet;
 
+import com.wison.mvc.annotation.WisonController;
+import com.wison.mvc.annotation.WisonRequestMapping;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import java.io.File;
@@ -33,10 +36,31 @@ public class DispatcherServlet extends HttpServlet {
             if(filePath.isDirectory()){
                 doScanPackage(basePackage + "." + path);
             }else {
+                //classUrl={com.wison.xx.xx.WisonController.class}
                 classUrls.add(basePackage + "." + filePath.getName().replace(".class",""));
             }
-
         }
+    }
 
+    public void doInstance(){
+        for (String classUrl : classUrls) {
+            try {
+                Class<?> clazz = Class.forName(classUrl);
+                if(clazz.isAnnotationPresent(WisonController.class)){
+                    Object instance = clazz.newInstance();
+                    WisonRequestMapping map1 = clazz.getAnnotation(WisonRequestMapping.class);
+                    String key = map1.value();
+                    ioc.put(key,instance);
+                }else if(){
+
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
