@@ -2,6 +2,7 @@ package com.wison.mvc.servlet;
 
 import com.wison.mvc.annotation.WisonController;
 import com.wison.mvc.annotation.WisonRequestMapping;
+import com.wison.mvc.annotation.WisonService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
@@ -51,7 +52,12 @@ public class DispatcherServlet extends HttpServlet {
                     WisonRequestMapping map1 = clazz.getAnnotation(WisonRequestMapping.class);
                     String key = map1.value();
                     ioc.put(key,instance);
-                }else if(){
+                }else if(clazz.isAnnotationPresent(WisonService.class)){
+                    Object instance1 = clazz.newInstance();
+                    WisonService wisonService = clazz.getAnnotation(WisonService.class);
+                    String key = wisonService.value();
+                    ioc.put(key,instance1);
+                }else{
 
                 }
             } catch (ClassNotFoundException e) {
